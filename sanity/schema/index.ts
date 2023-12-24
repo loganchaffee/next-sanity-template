@@ -1,15 +1,18 @@
 import { type SchemaTypeDefinition } from "sanity";
 import { siteSettings } from "./site-settings";
 import { homePage } from "./home-page";
-import { aboutPage } from "./about-page";
 import { page } from "./page.tsx";
 
-export const schema: {
+type Schema = {
   types: SchemaTypeDefinition[];
   singletonTypes: SchemaTypeDefinition[];
-  getAllTypes: () => { types: SchemaTypeDefinition[] };
-} = {
-  singletonTypes: [siteSettings, homePage, aboutPage],
+  getAllTypes: () => {
+    types: SchemaTypeDefinition[];
+  };
+};
+
+export const schema: Schema = {
+  singletonTypes: [siteSettings, homePage],
   types: [page],
   getAllTypes() {
     return {

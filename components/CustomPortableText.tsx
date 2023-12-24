@@ -1,6 +1,6 @@
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import type { PortableTextBlock } from "@portabletext/types";
-import { urlForImage } from "../../sanity/lib/image";
+import { urlForImage } from "@/sanity/lib/image";
 
 const components: PortableTextComponents = {
   marks: {

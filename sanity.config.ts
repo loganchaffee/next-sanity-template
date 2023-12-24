@@ -4,19 +4,14 @@
 
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
-import { StructureBuilder, deskTool } from "sanity/desk";
+import { deskTool } from "sanity/desk";
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schema } from "./sanity/schema";
 import { colorInput } from "@sanity/color-input";
 import { simplerColorInput } from "sanity-plugin-simpler-color-input";
-import { DocumentIcon, HomeIcon, WrenchIcon } from "@sanity/icons";
-import { HomePage } from "./sanity/schema/HomePage";
-import { SiteSettings } from "./sanity/schema/SiteSettings";
-import { AboutPage } from "./sanity/schema/AboutPage";
 import { singletonPlugin, pageStructure } from "./sanity/plugins/singleton";
 import { presentationTool } from "sanity/presentation";
 
-// This lets us customize the santy studio.
 export default defineConfig({
   basePath: "/admin",
   projectId,
@@ -42,7 +37,6 @@ export default defineConfig({
     // Prevents duplicates of these types
     singletonPlugin(schema.singletonTypes.map((type) => type.name)),
     presentationTool({
-      locate,
       previewUrl: {
         draftMode: {
           enable: "/api/draft",

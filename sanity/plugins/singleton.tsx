@@ -2,7 +2,7 @@
  * This plugin contains all the logic for setting up the singletons
  */
 
-import { type DocumentDefinition } from "sanity";
+import { SchemaTypeDefinition, type DocumentDefinition } from "sanity";
 import { type StructureResolver } from "sanity/desk";
 
 export const singletonPlugin = (types: string[]) => {
@@ -39,7 +39,7 @@ export const singletonPlugin = (types: string[]) => {
 // The StructureResolver is how we're changing the DeskTool structure to linking to document (named Singleton)
 // like how "Home" is handled.
 export const pageStructure = (
-  typeDefArray: DocumentDefinition[],
+  typeDefArray: SchemaTypeDefinition[],
 ): StructureResolver => {
   return (S) => {
     // Goes through all of the singletons that were provided and translates them into something the
