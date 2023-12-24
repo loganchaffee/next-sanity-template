@@ -4,52 +4,50 @@
 
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
-import { deskTool } from "sanity/desk";
+import { StructureBuilder, deskTool } from "sanity/desk";
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schema } from "./sanity/schema";
-
-const singletonActions = new Set(["publish", "discardChanges", "restore"]);
-
-const singletonTypes = new Set(["homePage"]);
+import { colorInput } from "@sanity/color-input";
+import { simplerColorInput } from "sanity-plugin-simpler-color-input";
+import { DocumentIcon, HomeIcon, WrenchIcon } from "@sanity/icons";
+import { HomePage } from "./sanity/schema/HomePage";
+import { SiteSettings } from "./sanity/schema/SiteSettings";
+import { AboutPage } from "./sanity/schema/AboutPage";
+import { singletonPlugin, pageStructure } from "./sanity/plugins/singleton";
+import { presentationTool } from "sanity/presentation";
 
 // This lets us customize the santy studio.
-const deskStructure = (S) =>
-  S.list()
-    .title("Content")
-    .items([
-      // Singletons
-      S.listItem()
-        .title("Home Page")
-        .child(
-          S.editor()
-            .id("homePage")
-            .schemaType("homePage")
-            .documentId("homePageSingleton"),
-        ),
-      // Regular schemas
-      ...S.documentTypeListItems().filter(
-        (listItem) => !singletonTypes.has(listItem.getId()),
-      ),
-    ]);
-
 export default defineConfig({
   basePath: "/admin",
   projectId,
   dataset,
-  schema,
+  schema: schema.getAllTypes(),
   plugins: [
-    deskTool({ structure: deskStructure }),
+    deskTool({
+      structure: pageStructure(schema.singletonTypes),
+    }),
+    colorInput(),
+    simplerColorInput({
+      defaultColorFormat: "hex",
+      defaultColorList: [
+        // Using tailwind colors keeps everyting in the same palette
+        { label: "White", value: "#ffffff" },
+        { label: "Black", value: "#333333" },
+        { label: "Gray", value: "#6b7280" },
+        { label: "Brand", value: "#2563eb" },
+      ],
+    }),
     // Vision is a tool that lets you query your content with GROQ in the studio
     visionTool({ defaultApiVersion: apiVersion }),
+    // Prevents duplicates of these types
+    singletonPlugin(schema.singletonTypes.map((type) => type.name)),
+    presentationTool({
+      locate,
+      previewUrl: {
+        draftMode: {
+          enable: "/api/draft",
+        },
+      },
+    }),
   ],
-  document: {
-    // For singleton types, filter out actions that are not explicitly included
-    // in the `singletonActions` list defined above
-    actions: (input, context) =>
-      singletonTypes.has(context.schemaType)
-        ? input.filter(({ action }) => action && singletonActions.has(action))
-        : input,
-  },
 });
-
-("123");
